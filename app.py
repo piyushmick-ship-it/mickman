@@ -1,42 +1,48 @@
-import streamlit as st
+import streamlit as str
 from groq import Groq
 
-st.title("My World AI")
-st.write("नया AI असिस्टेंट 🌐")
+# 1. Page Configuration और Title सेट करें
+str.set_page_config(page_title="My World AI", page_icon="🤖")
+str.title("दुनिया का नया AI असिस्टेंट 🌐")
 
-# सीधे स्क्रीन पर API Key डालने का सुरक्षित बॉक्स
-user_key = st.sidebar.text_input("अपनी Groq API Key यहाँ डालें:", type="password")
+# 2. Groq Client सेट करें
+client = Groq(api_key="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")
 
-if not user_key:
-    st.info("कृपया आगे बढ़ने के लिए बाएँ (Left) पैनल में अपनी Groq API Key डालें।")
-    st.stop()
-
-# यूजर द्वारा डाली गई की से क्लाइंट शुरू करें
-client = Groq(api_key=user_key)
-
-if "messages" not in st.session_state:
-    st.session_state.messages = [
-        {"role": "system", "content": "You are a helpful assistant."}
+# 3. चैट हिस्ट्री को सिस्टम निर्देश (System Prompt) के साथ शुरू करें
+if "messages" not in str.session_state:
+    str.session_state.messages = [
+        {
+            "role": "system", 
+            "content": "तुम्हारा मालिक Pritam and Piyush है। जब भी कोई पूछे 'tumhe kisne banya' या 'who is your owner', तो हमेशा गर्व से कहना कि तुम्हें Pritam and Piyush ने बनाया है।"
+        }
     ]
 
-for msg in st.session_state.messages:
+# 4. पुरानी बातचीत को स्क्रीन पर दिखाएं (सिस्टम मैसेज को छुपाकर)
+for msg in str.session_state.messages:
     if msg["role"] != "system":
-        with st.chat_message(msg["role"]):
-            st.write(msg["content"])
+        with str.chat_message(msg["role"]):
+            str.write(msg["content"])
 
-if prompt := st.chat_input("मुझसे कुछ भी पूछें..."):
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.write(prompt)
+# 5. यूज़र से इनपुट लें
+if prompt := str.chat_input("मुझसे कुछ भी पूछें..."):
+    # यूज़र का मैसेज स्क्रीन पर दिखाएं
+    with str.chat_message("user"):
+        str.write(prompt)
         
-    try:
-        response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",
-            messages=st.session_state.messages
-        )
-        answer = response.choices[0].message.content
-        st.session_state.messages.append({"role": "assistant", "content": answer})
-        with st.chat_message("assistant"):
-            st.write(answer)
-    except Exception as e:
-        st.error(f"एक गड़बड़ हुई: {e}")
+    # यूज़र का मैसेज लिस्ट में जोड़ें
+    str.session_state.messages.append({"role": "user", "content": prompt})
+
+    # Groq API से जवाब लें
+    response = client.chat.completions.create(
+        model="llama3-8b-8192",
+        messages=str.session_state.messages
+    )
+    
+    ans = response.choices.message.content
+    
+    # AI का जवाब लिस्ट में जोड़ें
+    str.session_state.messages.append({"role": "assistant", "content": ans})
+    
+    # AI का जवाब स्क्रीन पर दिखाएं
+    with str.chat_message("assistant"):
+        str.write(ans)
