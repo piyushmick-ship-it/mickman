@@ -5,7 +5,8 @@ st.set_page_config(page_title="My World AI", page_icon="🤖")
 st.title("दुनिया का नया AI असिस्टेंट 🌐")
 
 # अपनी कॉपी की हुई Groq API Key यहाँ डालें
-client = Groq(api_key="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
+client = Groq(api_key="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")
+              
 
 
 if "messages" not in st.session_state:
