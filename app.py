@@ -6,7 +6,7 @@ st.title("दुनिया का नया AI असिस्टेंट �
 import streamlit as st
 from groq import Groq
 
-client = Groq(api_key="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)
+client = Groq(api_key="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")
 
 
 if "messages" not in st.session_state:
