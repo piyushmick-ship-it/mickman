@@ -6,7 +6,7 @@ str.set_page_config(page_title="My World AI", page_icon="🤖")
 str.title("दुनिया का नया AI असिस्टेंट 🌐")
 
 # 2. Groq Client सेट करें
-client = Groq(api_key="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")
+client = Groq(api_key="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")
 
 # 3. चैट हिस्ट्री को सिस्टम निर्देश (System Prompt) के साथ शुरू करें
 if "messages" not in str.session_state:
