@@ -2,7 +2,7 @@ import streamlit as st
 from groq import Groq
 
 st.set_page_config(page_title="My World AI", page_icon="🤖")
-st.title("दुनिया का नया AI असिस्टेंट 🌐)
+st.title("दुनिया का नया AI असिस्टेंट 🌐")
 import streamlit as st
 from groq import Groq
 
