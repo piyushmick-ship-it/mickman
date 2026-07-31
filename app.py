@@ -34,7 +34,7 @@ if prompt := st.chat_input("मुझसे कुछ भी पूछें..."
             model="llama-3.1-8b-instant",
             messages=st.session_state.messages
         )
-        answer = response.choices.message.content
+        answer = response.choices[0].message.content
         st.session_state.messages.append({"role": "assistant", "content": answer})
         with st.chat_message("assistant"):
             st.write(answer)
