@@ -31,10 +31,9 @@ if prompt := str.chat_input("मुझसे कुछ भी पूछें...
         
     # यूज़र का मैसेज लिस्ट में जोड़ें
     str.session_state.messages.append({"role": "user", "content": prompt})
-
-    # Groq API से जवाब लें
+# Groq API से जवाब लें
     response = client.chat.completions.create(
-        model="llama3-8b-8192",
+        model="llama-3.1-8b-instant",
         messages=str.session_state.messages
     )
     
