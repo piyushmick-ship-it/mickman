@@ -2,9 +2,7 @@ import streamlit as st
 from groq import Groq
 
 st.set_page_config(page_title="My World AI", page_icon="🤖")
-st.title("दुनिया का नया AI असिस्टेंट 🌐")
-
-# आपकी बिल्कुल नई और चालू चाबी मैंने यहाँ सेट कर दी है
+st.title("दुनिया का नया AI असिस्टेंट 🌐)
 import streamlit as st
 from groq import Groq
 
