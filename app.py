@@ -1,3 +1,4 @@
+
 import streamlit as str
 from groq import Groq
 
@@ -5,8 +6,9 @@ from groq import Groq
 str.set_page_config(page_title="My World AI", page_icon="🤖")
 str.title("दुनिया का नया AI असिस्टेंट 🌐")
 
-# 2. Groq Client सेट करें
-client = Groq(api_key="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")
+# 2. Groq Client सेट करें (अपनी बिल्कुल नई API Key यहाँ "" के बीच में डालें)
+# ध्यान दें: अगर नीचे दी गई की (key) काम न करे, तो ://groq.com से नई की बनाकर यहाँ पेस्ट करें
+client = Groq(api_key="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")
 
 # 3. चैट हिस्ट्री को सिस्टम निर्देश (System Prompt) के साथ शुरू करें
 if "messages" not in str.session_state:
@@ -31,17 +33,23 @@ if prompt := str.chat_input("मुझसे कुछ भी पूछें...
         
     # यूज़र का मैसेज लिस्ट में जोड़ें
     str.session_state.messages.append({"role": "user", "content": prompt})
-# Groq API से जवाब लें
-    response = client.chat.completions.create(
-        model="llama-3.1-8b-instant",
-        messages=str.session_state.messages
-    )
-    
-    ans = response.choices.message.content
-    
-    # AI का जवाब लिस्ट में जोड़ें
-    str.session_state.messages.append({"role": "assistant", "content": ans})
-    
-    # AI का जवाब स्क्रीन पर दिखाएं
-    with str.chat_message("assistant"):
-        str.write(ans)
+
+    try:
+        # Groq API से जवाब लें (लेटेस्ट वर्किंग मॉडल के साथ)
+        response = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=str.session_state.messages
+        )
+        
+        ans = response.choices[0].message.content
+        
+        # AI का जवाब लिस्ट में जोड़ें
+        str.session_state.messages.append({"role": "assistant", "content": ans})
+        
+        # AI का जवाब स्क्रीन पर दिखाएं
+        with str.chat_message("assistant"):
+            str.write(ans)
+            
+    except Exception as e:
+        with str.chat_message("assistant"):
+            str.error(f"एरर आया! कृपया Groq Cloud पर जाकर अपनी API Key बदलें।\nDetails: {e}")
