@@ -5,7 +5,12 @@ st.set_page_config(page_title="My World AI", page_icon="🤖")
 st.title("दुनिया का नया AI असिस्टेंट 🌐")
 
 # आपकी बिल्कुल नई और चालू चाबी मैंने यहाँ सेट कर दी है
-client = Groq(api_key="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")
+import streamlit as st
+from groq import Groq
+
+client = Groq(
+    api_key="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"
+)
 
 if "messages" not in st.session_state:
     st.session_state.messages = [
