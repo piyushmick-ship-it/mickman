@@ -44,12 +44,12 @@ if prompt := str.chat_input("मुझसे कुछ भी पूछें...
         ans = response.choices[0].message.content
         
         # AI का जवाब लिस्ट में जोड़ें
-        str.session_state.messages.append({"role": "assistant", "content": ans})
+        st.session_state.messages.append({"role": "assistant", "content": ans})
         
         # AI का जवाब स्क्रीन पर दिखाएं
-        with str.chat_message("assistant"):
-            str.write(ans)
+        with st.chat_message("assistant"):
+            st.write(ans)
             
     except Exception as e:
-        with str.chat_message("assistant"):
-            str.error(f"एरर आया! कृपया Groq Cloud पर जाकर अपनी API Key बदलें।\nDetails: {e}")
+        with st.chat_message("assistant"):
+            st.error(f"एरर आया! कृपया Groq Cloud पर जाकर अपनी API Key बदलें।\nDetails: {e}")
