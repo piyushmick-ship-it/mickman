@@ -8,10 +8,10 @@ st.title("🤖 My Advanced AI Assistant")
 st.caption("Google Gemini द्वारा संचालित एक शक्तिशाली और आधुनिक एआई ऐप")
 
 # 2. API Key सेट करें (अपनी असली चाबी यहाँ डालें या साइडबार में इनपुट लें)
-GEMINI_API_KEY = "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"
+GEMINI_API_KEY = ("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")
 
 if GEMINI_API_KEY == "YOUR_GEMINI_API_KEY_HERE" or not GEMINI_API_KEY:
-    GEMINI_API_KEY = st.sidebar.text_input("अपनी Gemini API Key यहाँ डालें:", type="password")
+    GEMINI_API_KEY = st.sidebar.text_input("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")
 
 if not GEMINI_API_KEY:
     st.info("शुरू करने के लिए कृपया साइडबार में अपनी Gemini API Key दर्ज करें।", icon="🔑")
