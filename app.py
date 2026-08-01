@@ -9,7 +9,7 @@ st.set_page_config(page_title="My World AI Pro", page_icon="🚀", layout="wide"
 with st.sidebar:
     st.title("⚙️ AI सेटिंग्स")
     # API Key को सुरक्षित रखने के लिए छुपा हुआ इनपुट बॉक्स
-    api_key = st.text_input("Groq API Key डालें", value="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", type="password")
+    api_key = st.text_input("Groq API Key डालें", value="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")
     
     # एडवांस मॉडल चुनने का विकल्प
     model_choice = st.selectbox(
