@@ -6,7 +6,7 @@ st.set_page_config(page_title="Advanced Groq AI Assistant", page_icon="⚡", lay
 st.title("⚡ My Advanced Groq AI")
 st.caption("Groq और Llama 3 द्वारा संचालित सबसे तेज़ एआई ऐप")
 
-# 2. यहाँ अपनी Groq API Key डालें (उद्धरण चिन्हों "" के अंदर)
+# 2. अपनी Groq API Key यहाँ डालें (उद्धरण चिन्हों "" के अंदर)
 GROQ_API_KEY = ("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") 
 
 # अगर ऊपर चाबी नहीं बदली है, तो यह साइडबार में इनपुट बॉक्स दिखाएगा
@@ -60,20 +60,22 @@ if user_prompt := st.chat_input("Groq AI से कुछ भी पूछें
         try:
             # Groq API को कॉल करना (Streaming के साथ)
             response_stream = client.chat.completions.create(
-                model="llama-3.3-70b-versatile", # Groq का सबसे बेहतरीन मॉडल
+                model="llama-3.3-70b-versatile",
                 messages=st.session_state.messages,
                 stream=True,
             )
             
-            # जवाब को लाइव टाइप होते हुए दिखाना
+            # एरर फिक्स: यहाँ choices[0] जोड़ा गया है
             for chunk in response_stream:
-                if chunk.choices.delta.content is not None:
-                    full_response += chunk.choices.delta.content
-                    message_placeholder.markdown(full_response + "▌")
+                if chunk.choices and len(chunk.choices) > 0:
+                    delta = chunk.choices[0].delta
+                    if hasattr(delta, 'content') and delta.content is not None:
+                        full_response += delta.content
+                        message_placeholder.markdown(full_response + "▌")
             
             message_placeholder.markdown(full_response)
             
-            # इतिहास में AI का जवाब जोड़ें ताकि वह बात याद रखे
+            # इतिहास में AI का जवाब जोड़ें
             st.session_state.messages.append({"role": "assistant", "content": full_response})
             
         except Exception as e:
