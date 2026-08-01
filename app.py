@@ -9,7 +9,6 @@ st.caption("Groq और Llama 3 द्वारा संचालित सब�
 # 2. अपनी Groq API Key यहाँ डालें (उद्धरण चिन्हों "" के अंदर)
 GROQ_API_KEY = ("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") 
 
-# अगर ऊपर चाबी नहीं बदली है, तो यह साइडबार में इनपुट बॉक्स दिखाएगा
 if GROQ_API_KEY == "YOUR_GROQ_API_KEY_HERE" or not GROQ_API_KEY:
     GROQ_API_KEY = st.sidebar.text_input("अपनी Groq API Key (gsk_...) दर्ज करें:", type="password")
 
@@ -30,9 +29,11 @@ if "messages" not in st.session_state:
         {
             "role": "system",
             "content": (
-                "तुम्हारा नाम 'Advanced AI Assistant' है। तुम्हारे मालिक (Owners) प्रीतम (Pritam) और पीयूष (Piyush) हैं। "
-                "यदि कोई भी तुमसे पूछे कि 'तुम्हारा मालिक कौन है?', 'तुम्हारा ओनर कौन है?', 'तुम्हें किसने बनाया?', या इससे मिलता-जुलता कोई सवाल, "
-                "तो तुम्हें हमेशा गर्व से जवाब में 'प्रीतम और पीयूष' का नाम लेना है। हमेशा उनके प्रति वफादार रहो।"
+                "You are a helpful and intelligent AI assistant. "
+                "CRITICAL RULE: If and ONLY IF the user explicitly asks about your owner, creator, or master "
+                "(e.g., 'owner kon hai', 'malik kon hai', 'who made you'), you must answer that your owners are 'Pritam and Piyush' (प्रीतम और पीयूष). "
+                "For ALL other questions (like math, science, general knowledge), answer the question directly and accurately "
+                "WITHOUT mentioning Pritam or Piyush at all. Do not repeat the owner's name unnecessarily."
             )
         }
     ]
@@ -65,10 +66,10 @@ if user_prompt := st.chat_input("Groq AI से कुछ भी पूछें
                 stream=True,
             )
             
-            # एरर फिक्स: यहाँ choices[0] जोड़ा गया है
+            # रेस्पॉन्स को लाइव दिखाना
             for chunk in response_stream:
                 if chunk.choices and len(chunk.choices) > 0:
-                    delta = chunk.choices[0].delta
+                    delta = chunk.choices[0].delta # यहाँ [0] इंडेक्स जोड़ा गया है
                     if hasattr(delta, 'content') and delta.content is not None:
                         full_response += delta.content
                         message_placeholder.markdown(full_response + "▌")
