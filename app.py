@@ -188,7 +188,7 @@ if __name__ == "__main__":
         if user_input.strip() == "":
             continue
             
-        # मिकमैन अपने टूल्स का उपयोग कर निर्णय लेगा
+        # मिकमैन अपने टूल्स का उपयोग कर निर्णय लेगाा
         try:
             response = mickman_ai.invoke(
                 {"input": user_input},
@@ -197,7 +197,10 @@ if __name__ == "__main__":
             # स्पीकर से जवाब देना
             speak(response['output'])
         except Exception as e:
-            speak(f"क्षमा करें मालिक, इस कमांड को प्रोसेस करने में तकनीकी समस्या आई है: {str(e)}"))
+            speak(f"क्षमा करें मालिक, समस्या आई है: {str(e)}")
+
+# =====================================================================
+# 1. कॉन्फ़िगरेशन और API Keys (यहाँ अपनी Keys डालें)
 # =====================================================================
 os.environ["OPENAI_API_KEY"] = "YOUR_OPENAI_API_KEY"
 os.environ["SERPAPI_API_KEY"] = "YOUR_GOOGLE_SEARCH_API_KEY"
@@ -206,10 +209,6 @@ os.environ["SERPAPI_API_KEY"] = "YOUR_GOOGLE_SEARCH_API_KEY"
 llm = ChatOpenAI(model="gpt-4o", temperature=0.2)
 engine = pyttsx3.init()
 recognizer = sr.Recognizer()
-
-# =====================================================================
-# 2. मिकमैन के मूल फंक्शन्स (बोलना, सुनना, देखना)
-# =====================================================================
 def speak(text):
     """मिकमैन को आवाज देने के लिए (स्पीकर टूल)"""
     print(f"\nMickman: {text}")
@@ -217,7 +216,7 @@ def speak(text):
     engine.runAndWait()
 
 def listen_microphone():
-    """माइक से मालिकों की आवाज सुनने के लिए"""
+    """माइक से sabki की आवाज सुनने के लिए"""
     with sr.Microphone() as source:
         print("\n[Mickman सुन रहा है... आदेश दें]")
         recognizer.adjust_for_ambient_noise(source, duration=1)
