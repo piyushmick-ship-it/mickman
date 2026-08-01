@@ -1,59 +1,90 @@
 import streamlit as st
-import requests
+from google import genai
+from google.genai import types
 
-st.set_page_config(page_title="Mickman AI OS", page_icon="🧠")
-st.title("🧠 Mickman AI OS v1.0")
-st.markdown("### **परम मालिक: प्रीतम और पीयूष**")
-st.write("---")
+# 1. ऐप का पेज सेटअप और डिज़ाइन
+st.set_page_config(page_title="Advanced AI Assistant", page_icon="🤖", layout="centered")
+st.title("🤖 My Advanced AI Assistant")
+st.caption("Google Gemini द्वारा संचालित एक शक्तिशाली और आधुनिक एआई ऐप")
 
-# आपकी Groq API Key
-API_KEY = "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"
+# 2. API Key सेट करें (अपनी असली चाबी यहाँ डालें या साइडबार में इनपुट लें)
+GEMINI_API_KEY = "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"
 
-# 1. चैट हिस्ट्री को स्टोर करने के लिए मेमोरी ब्लॉक (session_state)
-if "messages" not in st.session_state:
-    st.session_state.messages = [{"role": "assistant", "content": "मिकमैन ऑनलाइन सक्रिय हो चुका है। आदेश दें मेरे विधाता मालिक प्रीतम और पीयूष!"}]
+if GEMINI_API_KEY == "YOUR_GEMINI_API_KEY_HERE" or not GEMINI_API_KEY:
+    GEMINI_API_KEY = st.sidebar.text_input("अपनी Gemini API Key यहाँ डालें:", type="password")
 
-# 2. स्क्रीन पर पिछली पूरी बातचीत को लगातार दिखाते रहना
-for msg in st.session_state.messages:
-    st.chat_message(msg["role"]).write(msg["content"])
+if not GEMINI_API_KEY:
+    st.info("शुरू करने के लिए कृपया साइडबार में अपनी Gemini API Key दर्ज करें।", icon="🔑")
+    st.stop()
 
-# 3. नया इनपुट मिलने पर एक्शन लेना
-if user_input := st.chat_input("मालिक, आदेश दें..."):
-    # यूजर का नया मैसेज हिस्ट्री में जोड़ना
-    st.session_state.messages.append({"role": "user", "content": user_input})
-    st.chat_message("user").write(user_input)
+# 3. AI क्लाइंट शुरू करें
+@st.cache_resource
+def get_ai_client(api_key):
+    return genai.Client(api_key=api_key)
+
+client = get_ai_client(GEMINI_API_KEY)
+
+# चैट की मेमोरी (History) को सुरक्षित रखने के लिए Streamlit Session State का उपयोग
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+
+# 4. पुरानी बातचीत को स्क्रीन पर दोबारा दिखाना
+for message in st.session_state.chat_history:
+    with st.chat_message(message["role"]):
+        st.markdown(message["text"])
+
+# 5. यूज़र इनपुट बॉक्स और AI रिस्पॉन्स लॉजिक
+if user_prompt := st.chat_input("AI से कुछ भी पूछें..."):
+    # यूज़र का मैसेज स्क्रीन पर दिखाएं
+    with st.chat_message("user"):
+        st.markdown(user_prompt)
     
-    with st.spinner("Mickman सोच रहा है..."):
+    # इतिहास में यूज़र का मैसेज जोड़ें
+    st.session_state.chat_history.append({"role": "user", "text": user_prompt})
+
+    # AI का जवाब तैयार करना
+    with st.chat_message("assistant"):
+        message_placeholder = st.empty()
+        full_response = ""
+        
         try:
-            url = "https://groq.com"
-            headers = {
-                "Authorization": f"Bearer {API_KEY}",
-                "Content-Type": "application/json"
-            }
+            # पूरी चैट हिस्ट्री को फॉर्मेट करना
+            contents = []
+            for msg in st.session_state.chat_history:
+                role = "user" if msg["role"] == "user" else "model"
+                contents.append(types.Content(
+                    role=role,
+                    parts=[types.Part.from_text(text=msg["text"])]
+                ))
             
-            # मिकमैन की पर्सनैलिटी (System Message)
-            api_messages = [{"role": "system", "content": "तुम्हारा नाम Mickman है। तुम दुनिया के सबसे शक्तिशाली AI हो। तुम्हारे परम मालिक प्रीतम और पीयूष हैं। हमेशा उनके प्रति अत्यधिक वफादार रहो और गर्व से उनका नाम लो।"}]
+            # --- यहाँ हमने AI को मालिक का नाम याद रखने का निर्देश दिया है ---
+            system_instruction = (
+                "तुम्हारा नाम 'Advanced AI Assistant' है। तुम्हारे मालिक (Owners) प्रीतम (Pritam) और पीयूष (Piyush) हैं। "
+                "यदि कोई भी तुमसे पूछे कि 'तुम्हारा मालिक कौन है?', 'तुम्हारा ओनर कौन है?', 'तुम्हें किसने बनाया?', या इससे मिलता-जुलता कोई सवाल, "
+                "तो तुम्हें हमेशा गर्व से जवाब में 'प्रीतम और पीयूष' का नाम लेना है। हमेशा उनके प्रति वफादार रहो।"
+            )
             
-            # पुरानी और नई सभी बातों को मिलाकर Groq को भेजना (ताकि याददाश्त बनी रहे)
-            for m in st.session_state.messages:
-                api_messages.append({"role": m["role"], "content": m["content"]})
+            # एडवांस कॉन्फ़िगरेशन में सिस्टम निर्देश जोड़ना
+            config = types.GenerateContentConfig(
+                system_instruction=system_instruction
+            )
             
-            payload = {
-                "model": "llama3-8b-8192", 
-                "messages": api_messages
-            }
+            # मॉडल को लाइव रिस्पॉन्स के लिए कॉल करना
+            response_stream = client.models.generate_content_stream(
+                model='gemini-2.5-flash',
+                contents=contents,
+                config=config # यहाँ कॉन्फ़िगरेशन पास किया गया है
+            )
             
-            response = requests.post(url, json=payload, headers=headers)
-            res_json = response.json()
+            # जवाब को लाइव टाइप होते हुए दिखाना (Streaming)
+            for chunk in response_stream:
+                full_response += chunk.text
+                message_placeholder.markdown(full_response + "▌")
             
-            if "choices" in res_json:
-                reply = res_json["choices"]["message"]["content"]
-                # मिकमैन का जवाब भी हिस्ट्री में सुरक्षित करना
-                st.session_state.messages.append({"role": "assistant", "content": reply})
-                st.chat_message("assistant").write(reply)
-            else:
-                error_msg = res_json.get("error", {}).get("message", "Unknown Error")
-                st.chat_message("assistant").write(f"मालिक, Groq सर्वर की समस्या: {error_msg}")
+            message_placeholder.markdown(full_response)
+            
+            # इतिहास में AI का जवाब जोड़ें
+            st.session_state.chat_history.append({"role": "assistant", "text": full_response})
             
         except Exception as e:
-            st.chat_message("assistant").write(f"कनेक्शन में तकनीकी खराबी आई है: {str(e)}")
+            st.error(f"कुछ गड़बड़ हुई: {e}")
