@@ -37,7 +37,7 @@ if prompt := str.chat_input("मुझसे कुछ भी पूछें...
     try:
         # Groq API से जवाब लें (लेटेस्ट वर्किंग मॉडल के साथ)
         response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="llama-3.1-8b-instant",
             messages=str.session_state.messages
         )
         
